@@ -12,9 +12,14 @@ import java.util.List;
 @RestController
 public class ToDoController {
 
-    @Autowired
-    private ToDoRepository toDoRepository;
+    private final ToDoRepository toDoRepository;
 
+    @Autowired
+    public ToDoController(ToDoRepository toDoRepository) {
+        this.toDoRepository = toDoRepository;
+    }
+
+    @SuppressWarnings("unused")
     @GetMapping("/todos")
     List<ToDo> all() {
         return toDoRepository.findAll();

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ListAllToDosTest {
+class ListAllToDosTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,7 +28,7 @@ public class ListAllToDosTest {
     private ToDoRepository toDoRepository;
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         List<ToDo> toDos = toDoRepository.findAll();
 
         for (ToDo toDo : toDos) {
@@ -37,7 +37,7 @@ public class ListAllToDosTest {
     }
 
     @Test
-    public void givenNoToDosExist_WhenListingAll_ThenEmptyListOfToDosIsDisplayed() throws Exception {
+    void givenNoToDosExist_WhenListingAll_ThenEmptyListOfToDosIsDisplayed() throws Exception {
         mockMvc.perform(get("/todos/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("[]"));
@@ -45,7 +45,7 @@ public class ListAllToDosTest {
 
 
     @Test
-    public void givenThatThreeItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListContainsThreeItems()
+    void givenThatThreeItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListContainsThreeItems()
             throws Exception {
         toDoRepository.save(new ToDo("First ToDo"));
         toDoRepository.save(new ToDo("Second ToDo"));

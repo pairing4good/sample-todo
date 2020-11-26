@@ -22,10 +22,12 @@ public class ToDo {
         this.description = description;
     }
 
+    @SuppressWarnings("unused")
     public Long getId() {
         return id;
     }
 
+    @SuppressWarnings("unused")
     public String getDescription() {
         return description;
     }
