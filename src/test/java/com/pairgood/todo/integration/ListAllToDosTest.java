@@ -1,5 +1,6 @@
 package com.pairgood.todo.integration;
 
+import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -28,11 +29,10 @@ public class ListAllToDosTest {
 
     @AfterEach
     public void tearDown() {
-        List<String> toDos = toDoRepository.findAll();
-        int toDoLength = toDos.size();
+        List<ToDo> toDos = toDoRepository.findAll();
 
-        for (int i = 0; i < toDoLength; i++) {
-            toDoRepository.delete(0);
+        for (ToDo toDo : toDos) {
+            toDoRepository.delete(toDo);
         }
     }
 
@@ -47,13 +47,17 @@ public class ListAllToDosTest {
     @Test
     public void givenThatThreeItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListContainsThreeItems()
             throws Exception {
-        toDoRepository.save("First ToDo");
-        toDoRepository.save("Second ToDo");
-        toDoRepository.save("Third ToDo");
+        toDoRepository.save(new ToDo("First ToDo"));
+        toDoRepository.save(new ToDo("Second ToDo"));
+        toDoRepository.save(new ToDo("Third ToDo"));
 
         mockMvc.perform(get("/todos/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[\"First ToDo\",\"Second ToDo\",\"Third ToDo\"]"));
+                .andExpect(content().json("[" +
+                        "{\"id\":1,\"description\":\"First ToDo\"}," +
+                        "{\"id\":2,\"description\":\"Second ToDo\"}," +
+                        "{\"id\":3,\"description\":\"Third ToDo\"}" +
+                        "]"));
     }
 
 }

@@ -1,28 +1,13 @@
 package com.pairgood.todo.repository;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class ToDoRepository {
+@Repository
+public interface ToDoRepository extends CrudRepository<ToDo, Long> {
 
-    private List<String> store;
-
-    public ToDoRepository() {
-        store = new ArrayList<>();
-    }
-
-    public void save(String item) {
-        store.add(item);
-    }
-
-    public List<String> findAll() {
-        return store;
-    }
-
-    public void delete(int id) {
-        store.remove(id);
-    }
+    @Override
+    List<ToDo> findAll();
 }
