@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.boot.test.context.SpringBootTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ToDoAcceptanceTest {
@@ -23,7 +23,7 @@ public class ToDoAcceptanceTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void givenThatNoItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListIsEmpty(){
+    public void givenThatNoItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListIsEmpty() {
         ResponseEntity<String[]> responseEntity = restTemplate
                 .getForEntity("http://localhost:" + port + "/todos/", String[].class);
         List<String> todoItems = Arrays.asList(responseEntity.getBody());
