@@ -50,16 +50,16 @@ class ListAllToDosTest {
     @Test
     void givenThatThreeItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListContainsThreeItems()
             throws Exception {
-        toDoRepository.save(new ToDo("First ToDo"));
-        toDoRepository.save(new ToDo("Second ToDo"));
-        toDoRepository.save(new ToDo("Third ToDo"));
+        ToDo firstToDo = toDoRepository.save(new ToDo("First ToDo"));
+        ToDo secondToDo = toDoRepository.save(new ToDo("Second ToDo"));
+        ToDo thirdToDo = toDoRepository.save(new ToDo("Third ToDo"));
 
         mockMvc.perform(get("/todos/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("[" +
-                        "{\"id\":1,\"description\":\"First ToDo\"}," +
-                        "{\"id\":2,\"description\":\"Second ToDo\"}," +
-                        "{\"id\":3,\"description\":\"Third ToDo\"}" +
+                        asJsonString(firstToDo) + "," +
+                        asJsonString(secondToDo) + "," +
+                        asJsonString(thirdToDo) +
                         "]"));
     }
 
@@ -70,12 +70,28 @@ class ListAllToDosTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
                 .content(asJsonString(new ToDo("test todo")))
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         List<ToDo> toDos = toDoRepository.findAll();
 
         assertThat(toDos.size()).isEqualTo(1);
         assertThat(toDos.get(0).getDescription()).isEqualTo("test todo");
+    }
+
+    @Test
+    void givenThatOneToDoExists_WhenToDoIsDeleted_ThenNoMoreToDosExist() throws Exception {
+        ToDo toDo = toDoRepository.save(new ToDo("test todo"));
+        Long id = toDo.getId();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/todos/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<ToDo> toDos = toDoRepository.findAll();
+
+        assertThat(toDos.size()).isEqualTo(0);
     }
 
     String asJsonString(final Object obj) {

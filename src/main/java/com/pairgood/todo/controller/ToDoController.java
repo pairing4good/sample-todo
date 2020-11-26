@@ -3,14 +3,11 @@ package com.pairgood.todo.controller;
 import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@SuppressWarnings("unused")
 @RestController
 public class ToDoController {
 
@@ -21,15 +18,18 @@ public class ToDoController {
         this.toDoRepository = toDoRepository;
     }
 
-    @SuppressWarnings("unused")
     @GetMapping("/todos")
     List<ToDo> all() {
         return toDoRepository.findAll();
     }
 
-    @SuppressWarnings("unused")
     @PostMapping("/todos")
     ToDo newEmployee(@RequestBody ToDo newToDo) {
         return toDoRepository.save(newToDo);
+    }
+
+    @DeleteMapping(value = "/todos/{id}")
+    void delete(@PathVariable Long id) {
+        toDoRepository.deleteById(id);
     }
 }
