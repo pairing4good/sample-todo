@@ -26,7 +26,11 @@ class ToDoAcceptanceTest {
     void givenThatNoItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListIsEmpty() {
         ResponseEntity<String[]> responseEntity = restTemplate
                 .getForEntity("http://localhost:" + port + "/todos/", String[].class);
-        List<String> todoItems = Arrays.asList(responseEntity.getBody());
+
+        String[] body = responseEntity.getBody();
+        assertThat(body).isNotNull();
+
+        List<String> todoItems = Arrays.asList(body);
 
         assertThat(todoItems).isEmpty();
     }

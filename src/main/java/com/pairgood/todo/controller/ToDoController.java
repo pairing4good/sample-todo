@@ -4,6 +4,8 @@ import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,5 +25,11 @@ public class ToDoController {
     @GetMapping("/todos")
     List<ToDo> all() {
         return toDoRepository.findAll();
+    }
+
+    @SuppressWarnings("unused")
+    @PostMapping("/todos")
+    ToDo newEmployee(@RequestBody ToDo newToDo) {
+        return toDoRepository.save(newToDo);
     }
 }
