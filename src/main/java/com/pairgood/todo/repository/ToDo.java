@@ -12,6 +12,7 @@ public class ToDo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;
+    private boolean done;
 
     @SuppressWarnings("unused")
     public ToDo() {
@@ -30,5 +31,13 @@ public class ToDo {
     @SuppressWarnings("unused")
     public String getDescription() {
         return description;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void markAsDone() {
+        done = true;
     }
 }

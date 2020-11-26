@@ -1,6 +1,7 @@
-package com.pairgood.todo.integration;
+package integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pairgood.todo.Application;
 import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 class ListAllToDosTest {
 
@@ -92,6 +93,24 @@ class ListAllToDosTest {
         List<ToDo> toDos = toDoRepository.findAll();
 
         assertThat(toDos.size()).isEqualTo(0);
+    }
+
+    @Test
+    void givenThatOneToDoExists_WhenThatItemIsMarkedAsDone_ThenThatItemIsListedAsDone() throws Exception {
+        ToDo toDo = toDoRepository.save(new ToDo("test todo"));
+        Long id = toDo.getId();
+
+        assertThat(toDo.isDone()).isFalse();
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/todos/{id}/done", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<ToDo> toDos = toDoRepository.findAll();
+
+        assertThat(toDos.size()).isEqualTo(1);
+        assertThat(toDos.get(0).isDone()).isTrue();
     }
 
     String asJsonString(final Object obj) {

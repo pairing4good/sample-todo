@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 @RestController
@@ -31,5 +32,16 @@ public class ToDoController {
     @DeleteMapping(value = "/todos/{id}")
     void delete(@PathVariable Long id) {
         toDoRepository.deleteById(id);
+    }
+
+    @PutMapping(value = "/todos/{id}/done")
+    void markAsDone(@PathVariable Long id) {
+        Optional<ToDo> results = toDoRepository.findById(id);
+
+        if (results.isPresent()) {
+            ToDo toDo = results.get();
+            toDo.markAsDone();
+            toDoRepository.save(toDo);
+        }
     }
 }
