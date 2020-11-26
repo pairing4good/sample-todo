@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ class ToDoAcceptanceTest {
     void givenThatNoItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListIsEmpty() {
         ResponseEntity<String[]> responseEntity = restTemplate
                 .getForEntity("http://localhost:" + port + "/todos/", String[].class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         String[] body = responseEntity.getBody();
         assertThat(body).isNotNull();
