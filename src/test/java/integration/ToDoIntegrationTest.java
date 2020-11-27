@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
-class ListAllToDosTest {
+class ToDoIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -60,6 +60,26 @@ class ListAllToDosTest {
                 .andExpect(content().json("[" +
                         asJsonString(firstToDo) + "," +
                         asJsonString(secondToDo) + "," +
+                        asJsonString(thirdToDo) +
+                        "]"));
+    }
+
+    @Test
+    void givenThatThreeItemsHaveBeenEnteredWithOneMarkedDone_WhenTheListIsDisplayed_ThenTheListContainsTwoItems()
+            throws Exception {
+        ToDo firstToDo = toDoRepository.save(new ToDo("First ToDo"));
+
+        ToDo doneToDo = new ToDo("Second ToDo");
+        doneToDo.markAsDone();
+        toDoRepository.save(doneToDo);
+
+        ToDo thirdToDo = toDoRepository.save(new ToDo("Third ToDo"));
+
+
+        mockMvc.perform(get("/todos/active")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[" +
+                        asJsonString(firstToDo) + "," +
                         asJsonString(thirdToDo) +
                         "]"));
     }

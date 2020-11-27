@@ -34,7 +34,21 @@ class ToDoControllerTest {
 
         when(toDoRepository.findAll()).thenReturn(toDos);
 
-        List<ToDo> all = controller.all();
+        List<ToDo> all = controller.listAll();
+
+        assertThat(all).isEqualTo(toDos);
+    }
+
+    @Test
+    void all_ShouldReturnAllActiveToDos() {
+        ToDo firstToDo = new ToDo("first");
+        ToDo thirdToDo = new ToDo("thrid");
+
+        List<ToDo> toDos = Arrays.asList(firstToDo, thirdToDo);
+
+        when(toDoRepository.findByDone(false)).thenReturn(toDos);
+
+        List<ToDo> all = controller.listActive();
 
         assertThat(all).isEqualTo(toDos);
     }

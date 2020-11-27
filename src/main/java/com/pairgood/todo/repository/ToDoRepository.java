@@ -10,4 +10,6 @@ public interface ToDoRepository extends CrudRepository<ToDo, Long> {
 
     @Override
     List<ToDo> findAll();
+
+    List<ToDo> findByDone(boolean done);
 }

@@ -20,8 +20,13 @@ public class ToDoController {
     }
 
     @GetMapping("/todos")
-    List<ToDo> all() {
+    List<ToDo> listAll() {
         return toDoRepository.findAll();
+    }
+
+    @GetMapping("/todos/active")
+    List<ToDo> listActive() {
+        return toDoRepository.findByDone(false);
     }
 
     @PostMapping("/todos")
