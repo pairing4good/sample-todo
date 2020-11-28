@@ -61,12 +61,12 @@ public class ToDoController {
         }
     }
 
-    public List<ToDo> prioritizeUp(int targetPriority, int increaseAmount) {
+    public List<ToDo> prioritizeUp(long targetPriority, long increaseAmount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
         return prioritizer.prioritize(toDos, targetPriority, increaseAmount);
     }
 
-    public List<ToDo> prioritizeDown(int targetPriority, int decreaseAmount) {
+    public List<ToDo> prioritizeDown(long targetPriority, long decreaseAmount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
         return prioritizer.prioritize(toDos, targetPriority, (decreaseAmount * -1));
     }
