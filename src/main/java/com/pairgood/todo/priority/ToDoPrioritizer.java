@@ -23,7 +23,7 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
                 toDo.setPriority(priority - amount);
             } else if (amount > 0 && priority > (offset - 1) && priority < targetPriority) {
                 toDo.setPriority(priority + 1);
-            } else if (priority > (targetPriority - 1) && priority < (offset + 1)) {
+            } else if (amount < 0 && priority > (targetPriority - 1) && priority < (offset + 1)) {
                 toDo.setPriority(priority - 1);
             }
 
