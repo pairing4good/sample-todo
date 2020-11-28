@@ -1,5 +1,6 @@
 package com.pairgood.todo.controller;
 
+import com.pairgood.todo.priority.ToDoPrioritizer;
 import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,12 @@ import java.util.Optional;
 public class ToDoController {
 
     private final ToDoRepository repository;
+    private ToDoPrioritizer toDoPrioritizer;
 
     @Autowired
-    public ToDoController(ToDoRepository repository) {
+    public ToDoController(ToDoRepository repository, ToDoPrioritizer toDoPrioritizer) {
         this.repository = repository;
+        this.toDoPrioritizer = toDoPrioritizer;
     }
 
     @GetMapping("/todos")
@@ -50,5 +53,15 @@ public class ToDoController {
             toDo.markAsDone();
             repository.save(toDo);
         }
+    }
+
+    public List<ToDo> prioritizeUp(int targetPriority, int increaseAmount) {
+        List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
+        return toDoPrioritizer.prioritize(toDos, targetPriority, increaseAmount);
+    }
+
+    public List<ToDo> prioritizeDown(int targetPriority, int decreaseAmount) {
+        List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
+        return toDoPrioritizer.prioritize(toDos, targetPriority, (decreaseAmount * -1));
     }
 }

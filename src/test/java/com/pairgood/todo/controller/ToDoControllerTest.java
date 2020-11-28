@@ -1,5 +1,6 @@
 package com.pairgood.todo.controller;
 
+import com.pairgood.todo.priority.ToDoPrioritizer;
 import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,9 @@ class ToDoControllerTest {
 
     @Mock
     private ToDoRepository toDoRepository;
+
+    @Mock
+    private ToDoPrioritizer toDoPrioritizer;
 
     @InjectMocks
     private ToDoController controller;
@@ -96,5 +101,31 @@ class ToDoControllerTest {
         controller.markAsDone(1L);
 
         verifyNoMoreInteractions(toDoRepository);
+    }
+
+    @Test
+    void prioritizeUp_ShouldReprioritizeToDos() {
+        List<ToDo> originalToDos = new ArrayList<>();
+        List<ToDo> reprioritizedToDos = new ArrayList<>();
+
+        when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
+        when(toDoPrioritizer.prioritize(originalToDos, 10, 5)).thenReturn(reprioritizedToDos);
+
+        List<ToDo> actual = controller.prioritizeUp(10, 5);
+
+        assertThat(actual).isSameAs(reprioritizedToDos);
+    }
+
+    @Test
+    void prioritizeDown_ShouldReprioritizeToDos() {
+        List<ToDo> originalToDos = new ArrayList<>();
+        List<ToDo> reprioritizedToDos = new ArrayList<>();
+
+        when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
+        when(toDoPrioritizer.prioritize(originalToDos, 10, -5)).thenReturn(reprioritizedToDos);
+
+        List<ToDo> actual = controller.prioritizeDown(10, 5);
+
+        assertThat(actual).isSameAs(reprioritizedToDos);
     }
 }
