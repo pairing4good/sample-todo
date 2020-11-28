@@ -21,9 +21,9 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
             long priority = toDo.getPriority();
             if (priority == targetPriority) {
                 toDo.setPriority(priority - amount);
-            } else if (amount > 0 && priority > (offset - 1) && priority < targetPriority) {
+            } else if (isPositiveNumber(amount) && priority > (offset - 1) && priority < targetPriority) {
                 toDo.setPriority(priority + 1);
-            } else if (amount < 0 && priority > (targetPriority - 1) && priority < (offset + 1)) {
+            } else if (isNegativeNumber(amount) && priority < (offset + 1) && priority > targetPriority) {
                 toDo.setPriority(priority - 1);
             }
 
@@ -33,5 +33,13 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
         reprioritizedToDos.sort((ToDo first, ToDo second) -> (int) (first.getPriority() - second.getPriority()));
 
         return reprioritizedToDos;
+    }
+
+    private boolean isNegativeNumber(Long amount) {
+        return amount < 0;
+    }
+
+    private boolean isPositiveNumber(long amount) {
+        return amount > 0;
     }
 }
