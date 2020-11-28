@@ -4,9 +4,15 @@ import com.pairgood.todo.priority.Prioritizer;
 import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
@@ -33,7 +39,7 @@ public class ToDoController {
     }
 
     @PostMapping("/todos")
-    ToDo add(@RequestBody ToDo newToDo) {
+    ToDo add(@Valid @RequestBody ToDo newToDo) {
         long toDoCount = repository.count();
         newToDo.setPriority(toDoCount + 1);
         return repository.save(newToDo);
@@ -63,5 +69,18 @@ public class ToDoController {
     public List<ToDo> prioritizeDown(int targetPriority, int decreaseAmount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
         return prioritizer.prioritize(toDos, targetPriority, (decreaseAmount * -1));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

@@ -84,7 +84,7 @@ class ToDoIntegrationTest {
     }
 
     @Test
-    void givenThatNoToDosExist_WhenNewToDoAdded_ThenTheListContainsOneItme() throws Exception {
+    void givenThatNoToDosExist_WhenNewToDoAdded_ThenTheListContainsOneItem() throws Exception {
         assertThat(toDoRepository.count()).isEqualTo(0);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
@@ -97,6 +97,45 @@ class ToDoIntegrationTest {
 
         assertThat(toDos.size()).isEqualTo(1);
         assertThat(toDos.get(0).getDescription()).isEqualTo("test todo");
+    }
+
+    @Test
+    void henNewToDoAddedWithNullDescription_ThenToDoIsNotSaved() throws Exception {
+        assertThat(toDoRepository.count()).isEqualTo(0);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
+                .content(asJsonString(new ToDo(null, 1)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"description\":\"must not be blank\"}", true));
+    }
+
+    @Test
+    void henNewToDoAddedWithEmptyStringDescription_ThenToDoIsNotSaved() throws Exception {
+        assertThat(toDoRepository.count()).isEqualTo(0);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
+                .content(asJsonString(new ToDo("", 1)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"description\":\"must not be blank\"}", true));
+    }
+
+    @Test
+    void henNewToDoAddedWithDescriptionContainingSpaces_ThenToDoIsNotSaved() throws Exception {
+        assertThat(toDoRepository.count()).isEqualTo(0);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
+                .content(asJsonString(new ToDo("   ", 1)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"description\":\"must not be blank\"}", true));
     }
 
     @Test

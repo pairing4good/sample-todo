@@ -8,11 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -127,5 +127,33 @@ class ToDoControllerTest {
         List<ToDo> actual = controller.prioritizeDown(10, 5);
 
         assertThat(actual).isSameAs(reprioritizedToDos);
+    }
+
+    @Test
+    void handleValidationExceptions_ShouldReturnAllErrorMessages() {
+        BindingResult bindingResult = mock(BindingResult.class);
+
+        when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(
+                new FieldError("testOne", "testFieldOne", "testErrorMessageOne"),
+                new FieldError("testTwo", "testFieldTwo", "testErrorMessageTwo"),
+                new FieldError("testThree", "testFieldThree", "testErrorMessageThree")
+        ));
+
+        MethodArgumentNotValidException methodArgumentNotValidException =
+                new MethodArgumentNotValidException(null, bindingResult);
+
+
+        Map<String, String> errors = controller.handleValidationExceptions(methodArgumentNotValidException);
+
+        assertThat(errors.size()).isEqualTo(3);
+
+        assertThat(errors.containsKey("testFieldOne")).isTrue();
+        assertThat(errors.containsKey("testFieldTwo")).isTrue();
+        assertThat(errors.containsKey("testFieldThree")).isTrue();
+
+        assertThat(errors.get("testFieldOne")).isEqualTo("testErrorMessageOne");
+        assertThat(errors.get("testFieldTwo")).isEqualTo("testErrorMessageTwo");
+        assertThat(errors.get("testFieldThree")).isEqualTo("testErrorMessageThree");
+
     }
 }
