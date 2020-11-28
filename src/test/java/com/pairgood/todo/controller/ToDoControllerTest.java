@@ -74,7 +74,7 @@ class ToDoControllerTest {
     }
 
     @Test
-    void markAsDone_whenToDoExists_ShouldUpdateTheToDoItemToDone() {
+    void markAsDone_ShouldUpdateTheToDoItemToDone() {
         ToDo toDo = new ToDo();
         Optional<ToDo> optionalToDo = Optional.of(toDo);
 
@@ -88,7 +88,7 @@ class ToDoControllerTest {
     }
 
     @Test
-    void markAsDone_whenToDoDoesNotExist_ShouldNotUpdateAnyToDoItem() {
+    void markAsDone_ShouldNotUpdateAnyToDoItem_WhenNoToDoExistsForTheId() {
         Optional<ToDo> optionalToDo = Optional.empty();
 
         when(toDoRepository.findById(1L)).thenReturn(optionalToDo);

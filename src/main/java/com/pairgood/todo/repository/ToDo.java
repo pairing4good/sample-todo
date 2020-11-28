@@ -43,14 +43,6 @@ public class ToDo {
         done = true;
     }
 
-    public void increasePriority() {
-        priority++;
-    }
-
-    public void decreasePriority() {
-        priority--;
-    }
-
     public long getPriority() {
         return priority;
     }
