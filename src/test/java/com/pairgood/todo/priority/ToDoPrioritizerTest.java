@@ -39,6 +39,46 @@ class ToDoPrioritizerTest {
     }
 
     @Test
+    void prioritize_ShouldNotPrioritizeToDosHigherThanOne() {
+        List<ToDo> toDos = Arrays.asList(
+                new ToDo("first", 1),
+                new ToDo("second", 2)
+        );
+
+        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 1L, 1L);
+
+        assertThat(reprioritizedToDos.size()).isEqualTo(2);
+
+        ToDo firstToDo = reprioritizedToDos.get(0);
+        assertThat(firstToDo.getDescription()).isEqualTo("first");
+        assertThat(firstToDo.getPriority()).isEqualTo(1);
+
+        ToDo secondToDo = reprioritizedToDos.get(1);
+        assertThat(secondToDo.getDescription()).isEqualTo("second");
+        assertThat(secondToDo.getPriority()).isEqualTo(2);
+    }
+
+    @Test
+    void prioritize_ShouldNotPrioritizeToDosLowerThanOne() {
+        List<ToDo> toDos = Arrays.asList(
+                new ToDo("first", 1),
+                new ToDo("second", 2)
+        );
+
+        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 2L, -1L);
+
+        assertThat(reprioritizedToDos.size()).isEqualTo(2);
+
+        ToDo firstToDo = reprioritizedToDos.get(0);
+        assertThat(firstToDo.getDescription()).isEqualTo("first");
+        assertThat(firstToDo.getPriority()).isEqualTo(1);
+
+        ToDo secondToDo = reprioritizedToDos.get(1);
+        assertThat(secondToDo.getDescription()).isEqualTo("second");
+        assertThat(secondToDo.getPriority()).isEqualTo(2);
+    }
+
+    @Test
     void prioritize_ShouldPrioritizeTheThirdItemToTheFirstItem() {
         List<ToDo> toDos = Arrays.asList(
                 new ToDo("first", 1),

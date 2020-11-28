@@ -11,13 +11,19 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
     public List<ToDo> prioritize(List<ToDo> toDos, Long targetPriority, Long amount) {
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
+        long offset = targetPriority - amount;
+
+        if (offset < 1 || toDos.size() < offset) {
+            return toDos;
+        }
+
         for (ToDo toDo : toDos) {
             long priority = toDo.getPriority();
             if (priority == targetPriority) {
                 toDo.setPriority(priority - amount);
-            } else if (amount > 0 && priority > (targetPriority - amount - 1) && priority < targetPriority) {
+            } else if (amount > 0 && priority > (offset - 1) && priority < targetPriority) {
                 toDo.setPriority(priority + 1);
-            } else if (priority > (targetPriority - 1) && priority < (targetPriority - amount + 1)) {
+            } else if (priority > (targetPriority - 1) && priority < (offset + 1)) {
                 toDo.setPriority(priority - 1);
             }
 
