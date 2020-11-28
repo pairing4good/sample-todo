@@ -27,7 +27,7 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
                 long priority = toDo.getPriority();
                 if (priority == targetPriority) {
                     toDo.setPriority(priority - amount);
-                } else {
+                } else if (priority > (targetPriority - 1) && priority < (targetPriority - amount + 1)) {
                     toDo.setPriority(priority - 1);
                 }
 
