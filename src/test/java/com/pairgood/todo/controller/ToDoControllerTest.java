@@ -1,6 +1,6 @@
 package com.pairgood.todo.controller;
 
-import com.pairgood.todo.priority.ToDoPrioritizer;
+import com.pairgood.todo.priority.Prioritizer;
 import com.pairgood.todo.repository.ToDo;
 import com.pairgood.todo.repository.ToDoRepository;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class ToDoControllerTest {
     private ToDoRepository toDoRepository;
 
     @Mock
-    private ToDoPrioritizer toDoPrioritizer;
+    private Prioritizer<ToDo> prioritizer;
 
     @InjectMocks
     private ToDoController controller;
@@ -109,7 +109,7 @@ class ToDoControllerTest {
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
         when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
-        when(toDoPrioritizer.prioritize(originalToDos, 10, 5)).thenReturn(reprioritizedToDos);
+        when(prioritizer.prioritize(originalToDos, 10, 5)).thenReturn(reprioritizedToDos);
 
         List<ToDo> actual = controller.prioritizeUp(10, 5);
 
@@ -122,7 +122,7 @@ class ToDoControllerTest {
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
         when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
-        when(toDoPrioritizer.prioritize(originalToDos, 10, -5)).thenReturn(reprioritizedToDos);
+        when(prioritizer.prioritize(originalToDos, 10, -5)).thenReturn(reprioritizedToDos);
 
         List<ToDo> actual = controller.prioritizeDown(10, 5);
 

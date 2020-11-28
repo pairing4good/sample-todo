@@ -1,12 +1,14 @@
 package com.pairgood.todo.repository;
 
+import com.pairgood.todo.priority.Prioritizable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class ToDo {
+public class ToDo implements Prioritizable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,10 +45,12 @@ public class ToDo {
         done = true;
     }
 
+    @Override
     public long getPriority() {
         return priority;
     }
 
+    @Override
     public void setPriority(long priority) {
         this.priority = priority;
     }

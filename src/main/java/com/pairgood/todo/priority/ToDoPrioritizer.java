@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ToDoPrioritizer {
+public class ToDoPrioritizer implements Prioritizer<ToDo> {
     public List<ToDo> prioritize(List<ToDo> toDos, int targetPriority, int amount) {
         return toDos;
     }
