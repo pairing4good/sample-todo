@@ -13,14 +13,16 @@ public class ToDo {
     private Long id;
     private String description;
     private boolean done;
+    private long priority;
 
     @SuppressWarnings("unused")
     public ToDo() {
 
     }
 
-    public ToDo(String description) {
+    public ToDo(String description, int priority) {
         this.description = description;
+        this.priority = priority;
     }
 
     @SuppressWarnings("unused")
@@ -39,5 +41,21 @@ public class ToDo {
 
     public void markAsDone() {
         done = true;
+    }
+
+    public void increasePriority() {
+        priority++;
+    }
+
+    public void decreasePriority() {
+        priority--;
+    }
+
+    public long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(long priority) {
+        this.priority = priority;
     }
 }

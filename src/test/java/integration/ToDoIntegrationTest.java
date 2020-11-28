@@ -33,7 +33,7 @@ class ToDoIntegrationTest {
 
     @AfterEach
     void tearDown() {
-        List<ToDo> toDos = toDoRepository.findAll();
+        Iterable<ToDo> toDos = toDoRepository.findAll();
 
         for (ToDo toDo : toDos) {
             toDoRepository.delete(toDo);
@@ -47,13 +47,12 @@ class ToDoIntegrationTest {
                 .andExpect(content().json("[]"));
     }
 
-
     @Test
     void givenThatThreeItemsHaveBeenEntered_WhenTheListIsDisplayed_ThenTheListContainsThreeItems()
             throws Exception {
-        ToDo firstToDo = toDoRepository.save(new ToDo("First ToDo"));
-        ToDo secondToDo = toDoRepository.save(new ToDo("Second ToDo"));
-        ToDo thirdToDo = toDoRepository.save(new ToDo("Third ToDo"));
+        ToDo firstToDo = toDoRepository.save(new ToDo("First ToDo", 1));
+        ToDo secondToDo = toDoRepository.save(new ToDo("Second ToDo", 2));
+        ToDo thirdToDo = toDoRepository.save(new ToDo("Third ToDo", 3));
 
         mockMvc.perform(get("/todos/")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -67,13 +66,13 @@ class ToDoIntegrationTest {
     @Test
     void givenThatThreeItemsHaveBeenEnteredWithOneMarkedDone_WhenTheListIsDisplayed_ThenTheListContainsTwoItems()
             throws Exception {
-        ToDo firstToDo = toDoRepository.save(new ToDo("First ToDo"));
+        ToDo firstToDo = toDoRepository.save(new ToDo("First ToDo", 1));
 
-        ToDo doneToDo = new ToDo("Second ToDo");
+        ToDo doneToDo = new ToDo("Second ToDo", 2);
         doneToDo.markAsDone();
         toDoRepository.save(doneToDo);
 
-        ToDo thirdToDo = toDoRepository.save(new ToDo("Third ToDo"));
+        ToDo thirdToDo = toDoRepository.save(new ToDo("Third ToDo", 3));
 
 
         mockMvc.perform(get("/todos/active")).andDo(print()).andExpect(status().isOk())
@@ -81,7 +80,7 @@ class ToDoIntegrationTest {
                 .andExpect(content().json("[" +
                         asJsonString(firstToDo) + "," +
                         asJsonString(thirdToDo) +
-                        "]"));
+                        "]", true));
     }
 
     @Test
@@ -89,12 +88,12 @@ class ToDoIntegrationTest {
         assertThat(toDoRepository.count()).isEqualTo(0);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
-                .content(asJsonString(new ToDo("test todo")))
+                .content(asJsonString(new ToDo("test todo", 1)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        List<ToDo> toDos = toDoRepository.findAll();
+        List<ToDo> toDos = toDoRepository.findAllByOrderByPriorityAsc();
 
         assertThat(toDos.size()).isEqualTo(1);
         assertThat(toDos.get(0).getDescription()).isEqualTo("test todo");
@@ -102,7 +101,7 @@ class ToDoIntegrationTest {
 
     @Test
     void givenThatOneToDoExists_WhenToDoIsDeleted_ThenNoMoreToDosExist() throws Exception {
-        ToDo toDo = toDoRepository.save(new ToDo("test todo"));
+        ToDo toDo = toDoRepository.save(new ToDo("test todo", 1));
         Long id = toDo.getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/todos/{id}", id)
@@ -110,14 +109,14 @@ class ToDoIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        List<ToDo> toDos = toDoRepository.findAll();
+        List<ToDo> toDos = toDoRepository.findAllByOrderByPriorityAsc();
 
         assertThat(toDos.size()).isEqualTo(0);
     }
 
     @Test
     void givenThatOneToDoExists_WhenThatItemIsMarkedAsDone_ThenThatItemIsListedAsDone() throws Exception {
-        ToDo toDo = toDoRepository.save(new ToDo("test todo"));
+        ToDo toDo = toDoRepository.save(new ToDo("test todo", 1));
         Long id = toDo.getId();
 
         assertThat(toDo.isDone()).isFalse();
@@ -127,7 +126,7 @@ class ToDoIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        List<ToDo> toDos = toDoRepository.findAll();
+        List<ToDo> toDos = toDoRepository.findAllByOrderByPriorityAsc();
 
         assertThat(toDos.size()).isEqualTo(1);
         assertThat(toDos.get(0).isDone()).isTrue();

@@ -8,8 +8,7 @@ import java.util.List;
 @Repository
 public interface ToDoRepository extends CrudRepository<ToDo, Long> {
 
-    @Override
-    List<ToDo> findAll();
+    List<ToDo> findAllByOrderByPriorityAsc();
 
-    List<ToDo> findByDone(boolean done);
+    List<ToDo> findByDoneOrderByPriorityAsc(boolean done);
 }

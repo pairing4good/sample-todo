@@ -26,13 +26,13 @@ class ToDoControllerTest {
 
     @Test
     void all_ShouldReturnAllOfTheToDos() {
-        ToDo firstToDo = new ToDo("first");
-        ToDo secondToDo = new ToDo("second");
-        ToDo thirdToDo = new ToDo("thrid");
+        ToDo firstToDo = new ToDo("first", 1);
+        ToDo secondToDo = new ToDo("second", 2);
+        ToDo thirdToDo = new ToDo("thrid", 3);
 
         List<ToDo> toDos = Arrays.asList(firstToDo, secondToDo, thirdToDo);
 
-        when(toDoRepository.findAll()).thenReturn(toDos);
+        when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(toDos);
 
         List<ToDo> all = controller.listAll();
 
@@ -41,12 +41,12 @@ class ToDoControllerTest {
 
     @Test
     void all_ShouldReturnAllActiveToDos() {
-        ToDo firstToDo = new ToDo("first");
-        ToDo thirdToDo = new ToDo("thrid");
+        ToDo firstToDo = new ToDo("first", 1);
+        ToDo thirdToDo = new ToDo("thrid", 2);
 
         List<ToDo> toDos = Arrays.asList(firstToDo, thirdToDo);
 
-        when(toDoRepository.findByDone(false)).thenReturn(toDos);
+        when(toDoRepository.findByDoneOrderByPriorityAsc(false)).thenReturn(toDos);
 
         List<ToDo> all = controller.listActive();
 
@@ -57,8 +57,11 @@ class ToDoControllerTest {
     void newEmployee_ShouldSaveTheToDoItem() {
         ToDo newToDo = new ToDo();
 
-        controller.newEmployee(newToDo);
+        when(toDoRepository.count()).thenReturn(1L);
 
+        controller.add(newToDo);
+
+        assertThat(newToDo.getPriority()).isEqualTo(2);
         verify(toDoRepository).save(newToDo);
     }
 

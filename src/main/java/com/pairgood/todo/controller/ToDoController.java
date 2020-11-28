@@ -12,41 +12,43 @@ import java.util.Optional;
 @RestController
 public class ToDoController {
 
-    private final ToDoRepository toDoRepository;
+    private final ToDoRepository repository;
 
     @Autowired
-    public ToDoController(ToDoRepository toDoRepository) {
-        this.toDoRepository = toDoRepository;
+    public ToDoController(ToDoRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping("/todos")
     List<ToDo> listAll() {
-        return toDoRepository.findAll();
+        return repository.findAllByOrderByPriorityAsc();
     }
 
     @GetMapping("/todos/active")
     List<ToDo> listActive() {
-        return toDoRepository.findByDone(false);
+        return repository.findByDoneOrderByPriorityAsc(false);
     }
 
     @PostMapping("/todos")
-    ToDo newEmployee(@RequestBody ToDo newToDo) {
-        return toDoRepository.save(newToDo);
+    ToDo add(@RequestBody ToDo newToDo) {
+        long toDoCount = repository.count();
+        newToDo.setPriority(toDoCount + 1);
+        return repository.save(newToDo);
     }
 
     @DeleteMapping(value = "/todos/{id}")
     void delete(@PathVariable Long id) {
-        toDoRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     @PutMapping(value = "/todos/{id}/done")
     void markAsDone(@PathVariable Long id) {
-        Optional<ToDo> results = toDoRepository.findById(id);
+        Optional<ToDo> results = repository.findById(id);
 
         if (results.isPresent()) {
             ToDo toDo = results.get();
             toDo.markAsDone();
-            toDoRepository.save(toDo);
+            repository.save(toDo);
         }
     }
 }
