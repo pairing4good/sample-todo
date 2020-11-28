@@ -64,6 +64,41 @@ class ToDoPrioritizerTest {
     }
 
     @Test
+    void prioritize_ShouldPerformPartialPrioritizationWithinLargerList() {
+        List<ToDo> toDos = Arrays.asList(
+                new ToDo("first", 1),
+                new ToDo("second", 2),
+                new ToDo("third", 3),
+                new ToDo("fourth", 4),
+                new ToDo("fifth", 5)
+        );
+
+        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 4L, 2L);
+
+        assertThat(reprioritizedToDos.size()).isEqualTo(5);
+
+        ToDo firstToDo = reprioritizedToDos.get(0);
+        assertThat(firstToDo.getDescription()).isEqualTo("first");
+        assertThat(firstToDo.getPriority()).isEqualTo(1);
+
+        ToDo secondToDo = reprioritizedToDos.get(1);
+        assertThat(secondToDo.getDescription()).isEqualTo("fourth");
+        assertThat(secondToDo.getPriority()).isEqualTo(2);
+
+        ToDo thirdToDo = reprioritizedToDos.get(2);
+        assertThat(thirdToDo.getDescription()).isEqualTo("second");
+        assertThat(thirdToDo.getPriority()).isEqualTo(3);
+
+        ToDo fourthToDo = reprioritizedToDos.get(3);
+        assertThat(fourthToDo.getDescription()).isEqualTo("third");
+        assertThat(fourthToDo.getPriority()).isEqualTo(4);
+
+        ToDo fifthToDo = reprioritizedToDos.get(4);
+        assertThat(fifthToDo.getDescription()).isEqualTo("fifth");
+        assertThat(fifthToDo.getPriority()).isEqualTo(5);
+    }
+
+    @Test
     void prioritize_ShouldPrioritizeTheFirstItemToTheSecondItem() {
         List<ToDo> toDos = Arrays.asList(
                 new ToDo("first", 1),
