@@ -21,9 +21,9 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
             long priority = toDo.getPriority();
             if (priority == targetPriority) {
                 toDo.setPriority(priority - amount);
-            } else if (isPositiveNumber(amount) && priority > (offset - 1) && priority < targetPriority) {
+            } else if (isPositiveNumber(amount) && inShiftDownZone(targetPriority, offset, priority)) {
                 toDo.setPriority(priority + 1);
-            } else if (isNegativeNumber(amount) && priority < (offset + 1) && priority > targetPriority) {
+            } else if (isNegativeNumber(amount) && inShiftUpZone(targetPriority, offset, priority)) {
                 toDo.setPriority(priority - 1);
             }
 
@@ -33,6 +33,14 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
         reprioritizedToDos.sort((ToDo first, ToDo second) -> (int) (first.getPriority() - second.getPriority()));
 
         return reprioritizedToDos;
+    }
+
+    private boolean inShiftUpZone(Long targetPriority, long offset, long priority) {
+        return priority > targetPriority && priority < (offset + 1);
+    }
+
+    private boolean inShiftDownZone(Long targetPriority, long offset, long priority) {
+        return priority > (offset - 1) && priority < targetPriority;
     }
 
     private boolean isNegativeNumber(Long amount) {
