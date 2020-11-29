@@ -65,7 +65,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("second", 2)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 2L, -1L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeDown(toDos, 2L, 1L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(2);
 
@@ -148,7 +148,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("fifth", 5)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 2L, -2L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeDown(toDos, 2L, 2L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(5);
 
@@ -180,7 +180,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("second", 2)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 1L, -1L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeDown(toDos, 1L, 1L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(2);
 

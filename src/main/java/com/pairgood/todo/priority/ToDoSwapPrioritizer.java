@@ -46,7 +46,25 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
 
     @Override
     public List<ToDo> prioritizeDown(List<ToDo> toDos, Long targetPriority, Long amount) {
-        return null;
+        long index = 0;
+
+        for (int i = 0; i < toDos.size(); i++) {
+            if (toDos.get(i).getPriority() == targetPriority) {
+                index = i;
+            }
+        }
+
+        for (int i = 0; i < Math.abs(amount); i++) {
+            if (destinationDownLocation(index, i) < toDos.size()) {
+                swap(toDos, targetDownLocation(index, i), destinationDownLocation(index, i));
+            }
+        }
+
+        for (int i = 0; i < toDos.size(); i++) {
+            toDos.get(i).setPriority(i + 1);
+        }
+
+        return toDos;
     }
 
     private int destinationDownLocation(long index, int offset) {
