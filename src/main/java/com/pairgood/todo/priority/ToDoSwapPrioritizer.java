@@ -26,10 +26,8 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
         index = locateIndexOfTargetPriority(toDos, targetPriority, index);
 
         for (int i = 0; i < Math.abs(amount); i++) {
-            if (amount > 0 && destinationUpLocation(index, i) > -1) {
+            if (destinationUpLocation(index, i) > -1) {
                 swap(toDos, targetUpLocation(index, i), destinationUpLocation(index, i));
-            } else if (amount < 0 && destinationDownLocation(index, i) < toDos.size()) {
-                swap(toDos, targetDownLocation(index, i), destinationDownLocation(index, i));
             }
         }
 
