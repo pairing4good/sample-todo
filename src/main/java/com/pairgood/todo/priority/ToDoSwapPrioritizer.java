@@ -23,11 +23,7 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
     public List<ToDo> prioritizeUp(List<ToDo> toDos, Long targetPriority, Long amount) {
         long index = 0;
 
-        for (int i = 0; i < toDos.size(); i++) {
-            if (toDos.get(i).getPriority() == targetPriority) {
-                index = i;
-            }
-        }
+        index = locateIndexOfTargetPriority(toDos, targetPriority, index);
 
         for (int i = 0; i < Math.abs(amount); i++) {
             if (amount > 0 && destinationUpLocation(index, i) > -1) {
@@ -37,22 +33,14 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
             }
         }
 
-        for (int i = 0; i < toDos.size(); i++) {
-            toDos.get(i).setPriority(i + 1);
-        }
-
-        return toDos;
+        return adjustPriority(toDos);
     }
 
     @Override
     public List<ToDo> prioritizeDown(List<ToDo> toDos, Long targetPriority, Long amount) {
         long index = 0;
 
-        for (int i = 0; i < toDos.size(); i++) {
-            if (toDos.get(i).getPriority() == targetPriority) {
-                index = i;
-            }
-        }
+        index = locateIndexOfTargetPriority(toDos, targetPriority, index);
 
         for (int i = 0; i < Math.abs(amount); i++) {
             if (destinationDownLocation(index, i) < toDos.size()) {
@@ -60,11 +48,23 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
             }
         }
 
+        return adjustPriority(toDos);
+    }
+
+    private List<ToDo> adjustPriority(List<ToDo> toDos) {
         for (int i = 0; i < toDos.size(); i++) {
             toDos.get(i).setPriority(i + 1);
         }
-
         return toDos;
+    }
+
+    private long locateIndexOfTargetPriority(List<ToDo> toDos, Long targetPriority, long index) {
+        for (int i = 0; i < toDos.size(); i++) {
+            if (toDos.get(i).getPriority() == targetPriority) {
+                index = i;
+            }
+        }
+        return index;
     }
 
     private int destinationDownLocation(long index, int offset) {
