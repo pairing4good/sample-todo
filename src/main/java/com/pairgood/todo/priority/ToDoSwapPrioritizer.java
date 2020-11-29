@@ -20,7 +20,7 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
         logger.info("constructing...");
     }
 
-    public List<ToDo> prioritize(List<ToDo> toDos, Long targetPriority, Long amount) {
+    public List<ToDo> prioritizeUp(List<ToDo> toDos, Long targetPriority, Long amount) {
         long index = 0;
 
         for (int i = 0; i < toDos.size(); i++) {
@@ -42,6 +42,11 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
         }
 
         return toDos;
+    }
+
+    @Override
+    public List<ToDo> prioritizeDown(List<ToDo> toDos, Long targetPriority, Long amount) {
+        return null;
     }
 
     private int destinationDownLocation(long index, int offset) {

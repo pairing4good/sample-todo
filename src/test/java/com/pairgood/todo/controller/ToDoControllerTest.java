@@ -109,7 +109,7 @@ class ToDoControllerTest {
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
         when(repository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
-        when(prioritizer.prioritize(originalToDos, 10L, 5L)).thenReturn(reprioritizedToDos);
+        when(prioritizer.prioritizeUp(originalToDos, 10L, 5L)).thenReturn(reprioritizedToDos);
 
         List<ToDo> actual = controller.prioritizeUp(10, 5);
 
@@ -124,7 +124,7 @@ class ToDoControllerTest {
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
         when(repository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
-        when(prioritizer.prioritize(originalToDos, 10L, -5L)).thenReturn(reprioritizedToDos);
+        when(prioritizer.prioritizeUp(originalToDos, 10L, -5L)).thenReturn(reprioritizedToDos);
 
         List<ToDo> actual = controller.prioritizeDown(10, 5);
 

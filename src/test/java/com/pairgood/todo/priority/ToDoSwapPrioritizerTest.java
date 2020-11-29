@@ -25,7 +25,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("second", 2)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 2L, 1L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 2L, 1L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(2);
 
@@ -45,7 +45,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("second", 2)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 1L, 1L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 1L, 1L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(2);
 
@@ -65,7 +65,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("second", 2)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 2L, -1L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 2L, -1L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(2);
 
@@ -86,7 +86,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("third", 3)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 3L, 2L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 3L, 2L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(3);
 
@@ -113,7 +113,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("fifth", 5)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 4L, 2L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 4L, 2L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(5);
 
@@ -148,7 +148,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("fifth", 5)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 2L, -2L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 2L, -2L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(5);
 
@@ -180,7 +180,7 @@ class ToDoSwapPrioritizerTest {
                 new ToDo("second", 2)
         );
 
-        List<ToDo> reprioritizedToDos = prioritizer.prioritize(toDos, 1L, -1L);
+        List<ToDo> reprioritizedToDos = prioritizer.prioritizeUp(toDos, 1L, -1L);
 
         assertThat(reprioritizedToDos.size()).isEqualTo(2);
 

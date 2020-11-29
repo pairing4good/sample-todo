@@ -64,7 +64,7 @@ public class ToDoController {
     @PutMapping(value = "/todos/prioritize/{priority}/up/{amount}")
     public List<ToDo> prioritizeUp(@PathVariable long priority, @PathVariable long amount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
-        List reprioritizedToDos = prioritizer.prioritize(toDos, priority, amount);
+        List reprioritizedToDos = prioritizer.prioritizeUp(toDos, priority, amount);
         repository.saveAll(reprioritizedToDos);
         return reprioritizedToDos;
     }
@@ -72,7 +72,7 @@ public class ToDoController {
     @PutMapping(value = "/todos/prioritize/{priority}/down/{amount}")
     public List<ToDo> prioritizeDown(@PathVariable long priority, @PathVariable long amount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
-        List reprioritizedToDos = prioritizer.prioritize(toDos, priority, (amount * -1));
+        List reprioritizedToDos = prioritizer.prioritizeUp(toDos, priority, (amount * -1));
         repository.saveAll(reprioritizedToDos);
         return reprioritizedToDos;
     }

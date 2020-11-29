@@ -19,7 +19,7 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
         logger.info("constructing...");
     }
 
-    public List<ToDo> prioritize(List<ToDo> toDos, Long targetPriority, Long amount) {
+    public List<ToDo> prioritizeUp(List<ToDo> toDos, Long targetPriority, Long amount) {
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
         long offset = targetPriority - amount;
@@ -44,6 +44,11 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
         reprioritizedToDos.sort((ToDo first, ToDo second) -> (int) (first.getPriority() - second.getPriority()));
 
         return reprioritizedToDos;
+    }
+
+    @Override
+    public List<ToDo> prioritizeDown(List<ToDo> toDos, Long targetPriority, Long amount) {
+        return null;
     }
 
     private boolean inShiftUpZone(Long targetPriority, long offset, long priority) {
