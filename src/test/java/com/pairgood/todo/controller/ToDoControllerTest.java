@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class ToDoControllerTest {
 
     @Mock
-    private ToDoRepository toDoRepository;
+    private ToDoRepository repository;
 
     @Mock
     private Prioritizer<ToDo, Long> prioritizer;
@@ -37,7 +37,7 @@ class ToDoControllerTest {
 
         List<ToDo> toDos = Arrays.asList(firstToDo, secondToDo, thirdToDo);
 
-        when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(toDos);
+        when(repository.findAllByOrderByPriorityAsc()).thenReturn(toDos);
 
         List<ToDo> all = controller.listAll();
 
@@ -51,7 +51,7 @@ class ToDoControllerTest {
 
         List<ToDo> toDos = Arrays.asList(firstToDo, thirdToDo);
 
-        when(toDoRepository.findByDoneOrderByPriorityAsc(false)).thenReturn(toDos);
+        when(repository.findByDoneOrderByPriorityAsc(false)).thenReturn(toDos);
 
         List<ToDo> all = controller.listActive();
 
@@ -62,12 +62,12 @@ class ToDoControllerTest {
     void newEmployee_ShouldSaveTheToDoItem() {
         ToDo newToDo = new ToDo();
 
-        when(toDoRepository.count()).thenReturn(1L);
+        when(repository.count()).thenReturn(1L);
 
         controller.add(newToDo);
 
         assertThat(newToDo.getPriority()).isEqualTo(2);
-        verify(toDoRepository).save(newToDo);
+        verify(repository).save(newToDo);
     }
 
     @Test
@@ -75,7 +75,7 @@ class ToDoControllerTest {
 
         controller.delete(1L);
 
-        verify(toDoRepository).deleteById(1L);
+        verify(repository).deleteById(1L);
     }
 
     @Test
@@ -83,24 +83,24 @@ class ToDoControllerTest {
         ToDo toDo = new ToDo();
         Optional<ToDo> optionalToDo = Optional.of(toDo);
 
-        when(toDoRepository.findById(1L)).thenReturn(optionalToDo);
+        when(repository.findById(1L)).thenReturn(optionalToDo);
 
         controller.markAsDone(1L);
 
         assertThat(toDo.isDone()).isTrue();
 
-        verify(toDoRepository).save(toDo);
+        verify(repository).save(toDo);
     }
 
     @Test
     void markAsDone_ShouldNotUpdateAnyToDoItem_WhenNoToDoExistsForTheId() {
         Optional<ToDo> optionalToDo = Optional.empty();
 
-        when(toDoRepository.findById(1L)).thenReturn(optionalToDo);
+        when(repository.findById(1L)).thenReturn(optionalToDo);
 
         controller.markAsDone(1L);
 
-        verifyNoMoreInteractions(toDoRepository);
+        verifyNoMoreInteractions(repository);
     }
 
     @Test
@@ -108,10 +108,12 @@ class ToDoControllerTest {
         List<ToDo> originalToDos = new ArrayList<>();
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
-        when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
+        when(repository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
         when(prioritizer.prioritize(originalToDos, 10L, 5L)).thenReturn(reprioritizedToDos);
 
         List<ToDo> actual = controller.prioritizeUp(10, 5);
+
+        verify(repository).saveAll(reprioritizedToDos);
 
         assertThat(actual).isSameAs(reprioritizedToDos);
     }
@@ -121,10 +123,12 @@ class ToDoControllerTest {
         List<ToDo> originalToDos = new ArrayList<>();
         List<ToDo> reprioritizedToDos = new ArrayList<>();
 
-        when(toDoRepository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
+        when(repository.findAllByOrderByPriorityAsc()).thenReturn(originalToDos);
         when(prioritizer.prioritize(originalToDos, 10L, -5L)).thenReturn(reprioritizedToDos);
 
         List<ToDo> actual = controller.prioritizeDown(10, 5);
+
+        verify(repository).saveAll(reprioritizedToDos);
 
         assertThat(actual).isSameAs(reprioritizedToDos);
     }

@@ -61,14 +61,20 @@ public class ToDoController {
         }
     }
 
-    public List<ToDo> prioritizeUp(long targetPriority, long increaseAmount) {
+    @PutMapping(value = "/todos/prioritize/{priority}/up/{amount}")
+    public List<ToDo> prioritizeUp(@PathVariable long priority, @PathVariable long amount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
-        return prioritizer.prioritize(toDos, targetPriority, increaseAmount);
+        List reprioritizedToDos = prioritizer.prioritize(toDos, priority, amount);
+        repository.saveAll(reprioritizedToDos);
+        return reprioritizedToDos;
     }
 
-    public List<ToDo> prioritizeDown(long targetPriority, long decreaseAmount) {
+    @PutMapping(value = "/todos/prioritize/{priority}/down/{amount}")
+    public List<ToDo> prioritizeDown(@PathVariable long priority, @PathVariable long amount) {
         List<ToDo> toDos = repository.findAllByOrderByPriorityAsc();
-        return prioritizer.prioritize(toDos, targetPriority, (decreaseAmount * -1));
+        List reprioritizedToDos = prioritizer.prioritize(toDos, priority, (amount * -1));
+        repository.saveAll(reprioritizedToDos);
+        return reprioritizedToDos;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -100,7 +100,7 @@ class ToDoIntegrationTest {
     }
 
     @Test
-    void henNewToDoAddedWithNullDescription_ThenToDoIsNotSaved() throws Exception {
+    void whenNewToDoAddedWithNullDescription_ThenToDoIsNotSaved() throws Exception {
         assertThat(toDoRepository.count()).isEqualTo(0);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
@@ -113,7 +113,7 @@ class ToDoIntegrationTest {
     }
 
     @Test
-    void henNewToDoAddedWithEmptyStringDescription_ThenToDoIsNotSaved() throws Exception {
+    void whenNewToDoAddedWithEmptyStringDescription_ThenToDoIsNotSaved() throws Exception {
         assertThat(toDoRepository.count()).isEqualTo(0);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
@@ -126,7 +126,7 @@ class ToDoIntegrationTest {
     }
 
     @Test
-    void henNewToDoAddedWithDescriptionContainingSpaces_ThenToDoIsNotSaved() throws Exception {
+    void whenNewToDoAddedWithDescriptionContainingSpaces_ThenToDoIsNotSaved() throws Exception {
         assertThat(toDoRepository.count()).isEqualTo(0);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/todos/")
@@ -169,6 +169,58 @@ class ToDoIntegrationTest {
 
         assertThat(toDos.size()).isEqualTo(1);
         assertThat(toDos.get(0).isDone()).isTrue();
+    }
+
+    @Test
+    void givenThatThreeItemsHaveBeenEntered_WhenTheSecondPriorityIsPrioritizedUp_ThenTheSecondItemIsListedFirst()
+            throws Exception {
+        toDoRepository.save(new ToDo("First ToDo", 1));
+        toDoRepository.save(new ToDo("Second ToDo", 2));
+        toDoRepository.save(new ToDo("Third ToDo", 3));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/todos/prioritize/{priority}/up/{amount}", 2, 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<ToDo> toDos = toDoRepository.findAllByOrderByPriorityAsc();
+
+        assertThat(toDos.size()).isEqualTo(3);
+
+        assertThat(toDos.get(0).getDescription()).isEqualTo("Second ToDo");
+        assertThat(toDos.get(0).getPriority()).isEqualTo(1);
+
+        assertThat(toDos.get(1).getDescription()).isEqualTo("First ToDo");
+        assertThat(toDos.get(1).getPriority()).isEqualTo(2);
+
+        assertThat(toDos.get(2).getDescription()).isEqualTo("Third ToDo");
+        assertThat(toDos.get(2).getPriority()).isEqualTo(3);
+    }
+
+    @Test
+    void givenThatThreeItemsHaveBeenEntered_WhenTheSecondPriorityIsPrioritizedDown_ThenTheSecondItemIsListedLast()
+            throws Exception {
+        toDoRepository.save(new ToDo("First ToDo", 1));
+        toDoRepository.save(new ToDo("Second ToDo", 2));
+        toDoRepository.save(new ToDo("Third ToDo", 3));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/todos/prioritize/{priority}/down/{amount}", 2, 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<ToDo> toDos = toDoRepository.findAllByOrderByPriorityAsc();
+
+        assertThat(toDos.size()).isEqualTo(3);
+
+        assertThat(toDos.get(0).getDescription()).isEqualTo("First ToDo");
+        assertThat(toDos.get(0).getPriority()).isEqualTo(1);
+
+        assertThat(toDos.get(1).getDescription()).isEqualTo("Third ToDo");
+        assertThat(toDos.get(1).getPriority()).isEqualTo(2);
+
+        assertThat(toDos.get(2).getDescription()).isEqualTo("Second ToDo");
+        assertThat(toDos.get(2).getPriority()).isEqualTo(3);
     }
 
     String asJsonString(final Object obj) {

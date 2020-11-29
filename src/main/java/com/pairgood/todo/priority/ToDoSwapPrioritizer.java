@@ -1,12 +1,25 @@
 package com.pairgood.todo.priority;
 
 import com.pairgood.todo.repository.ToDo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static java.util.Collections.swap;
 
+@Component
+@Profile("swap")
 public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
+
+    Logger logger = LoggerFactory.getLogger(ToDoSwapPrioritizer.class);
+
+    public ToDoSwapPrioritizer() {
+        logger.info("constructing...");
+    }
+
     public List<ToDo> prioritize(List<ToDo> toDos, Long targetPriority, Long amount) {
         long index = 0;
 
