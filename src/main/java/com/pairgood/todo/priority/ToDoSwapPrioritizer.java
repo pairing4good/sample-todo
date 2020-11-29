@@ -21,11 +21,9 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
     }
 
     public List<ToDo> prioritizeUp(List<ToDo> toDos, Long targetPriority, Long amount) {
-        long index = 0;
+        long index = locateIndexOfTargetPriority(toDos, targetPriority);
 
-        index = locateIndexOfTargetPriority(toDos, targetPriority, index);
-
-        for (int i = 0; i < Math.abs(amount); i++) {
+        for (int i = 0; i < amount; i++) {
             if (destinationUpLocation(index, i) > -1) {
                 swap(toDos, targetUpLocation(index, i), destinationUpLocation(index, i));
             }
@@ -36,11 +34,9 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
 
     @Override
     public List<ToDo> prioritizeDown(List<ToDo> toDos, Long targetPriority, Long amount) {
-        long index = 0;
+        long index = locateIndexOfTargetPriority(toDos, targetPriority);
 
-        index = locateIndexOfTargetPriority(toDos, targetPriority, index);
-
-        for (int i = 0; i < Math.abs(amount); i++) {
+        for (int i = 0; i < amount; i++) {
             if (destinationDownLocation(index, i) < toDos.size()) {
                 swap(toDos, targetDownLocation(index, i), destinationDownLocation(index, i));
             }
@@ -56,7 +52,9 @@ public class ToDoSwapPrioritizer implements Prioritizer<ToDo, Long> {
         return toDos;
     }
 
-    private long locateIndexOfTargetPriority(List<ToDo> toDos, Long targetPriority, long index) {
+    private long locateIndexOfTargetPriority(List<ToDo> toDos, Long targetPriority) {
+        long index = 0;
+
         for (int i = 0; i < toDos.size(); i++) {
             if (toDos.get(i).getPriority() == targetPriority) {
                 index = i;

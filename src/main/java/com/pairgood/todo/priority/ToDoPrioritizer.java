@@ -39,7 +39,7 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
             reprioritizedToDos.add(toDo);
         }
 
-        reprioritizedToDos.sort((ToDo first, ToDo second) -> (int) (first.getPriority() - second.getPriority()));
+        sortByPriority(reprioritizedToDos);
 
         return reprioritizedToDos;
     }
@@ -65,9 +65,13 @@ public class ToDoPrioritizer implements Prioritizer<ToDo, Long> {
             reprioritizedToDos.add(toDo);
         }
 
-        reprioritizedToDos.sort((ToDo first, ToDo second) -> (int) (first.getPriority() - second.getPriority()));
+        sortByPriority(reprioritizedToDos);
 
         return reprioritizedToDos;
+    }
+
+    private void sortByPriority(List<ToDo> reprioritizedToDos) {
+        reprioritizedToDos.sort((ToDo first, ToDo second) -> (int) (first.getPriority() - second.getPriority()));
     }
 
     private boolean inShiftUpZone(Long targetPriority, long offset, long priority) {
