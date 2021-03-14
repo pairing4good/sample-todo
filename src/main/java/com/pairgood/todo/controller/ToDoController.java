@@ -30,7 +30,7 @@ public class ToDoController {
 
     @GetMapping("/todos")
     List<ToDo> listAll() {
-        return repository.findAllByOrderByPriorityAsc();
+        return repository.findAllByOrderByPriorityAsc(); //Dave's Change
     }
 
     @GetMapping("/todos/active")
